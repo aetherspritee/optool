@@ -246,6 +246,9 @@ real(kind=dp)           :: dphi               ! Phase shift induced by aggregate
 real(kind=dp)           :: ang(1:2*nang-1)    ! angle grids (from 0.0 to 180.0 deg)
 real(kind=dp)           :: Smat(1:4,2*nang-1) ! Scatteing matrix elements
 real(kind=dp)           :: PF(1:2*nang-1)     ! Phase function (BH def.)
+real(kind=dp)           :: Qsca
+real(kind=dp)           :: Qext
+real(kind=dp)           :: Qabs
 
 !--------------------------------------------------------------------------------
 !       Local variables
@@ -267,6 +270,7 @@ real(kind=dp)::x1,x2,anunp,bnunp
 real(kind=dp)::dang,S11,S12,S33,S34
 real(kind=dp)::q,Sq,al,bb,xx,cc 
 real(kind=dp)::nrm
+real(kind=dp)::geom_proj
 real(kind=dp)::GC,tau
 real(kind=dp),allocatable,dimension(:)::PMN,PMND,LP,DLP
 real(kind=dp),allocatable,dimension(:,:)::AL1N,LN,DLN
@@ -625,6 +629,7 @@ endif
 ! monomer.
 !
 dang=halfpi/real(nang-1,kind=dp)
+print*, "DD:: ", dd;
 call renorm_mie(dd,nstop,nang,dang,S1,S2)
 
 !
@@ -798,8 +803,8 @@ elseif(iqsca .eq. 3) then
                 Cabsp = Cabsp + real(2*n+1,kind=dp)*&
                        &real(cn1*abs(ad(1,n))*abs(ad(1,n))+cn2*abs(ad(2,n))*abs(ad(2,n)))
         enddo
-        Cext  = Cext  * twopi * PN / k / k 
-        Cabsp = Cabsp * twopi * PN / k / k 
+        Cext  = Cext  * twopi * PN / k / k
+        Cabsp = Cabsp * twopi * PN / k / k
         !
         ! Geometrical cross section of an aggregate
         !
@@ -827,9 +832,20 @@ elseif(iqsca .eq. 3) then
                 Cabsp = GC * (1.0_dp - exp(-tau))      
         endif
         ! Compare MFT vs. RGD+GeoOpt, take the larger one.
-        Cabsp = max(Cabsp,Cext-Csca)            
+        Cabsp = max(Cabsp,Cext-Csca)
         ! Scattrering is computed from Cext(MFT)-Cabs.
-        Csca  = Cext - Cabsp                    
+        Csca  = Cext - Cabsp
+        print*, "CEXT: ", Cext;
+        print*, "CSCA: ", Csca;
+        print*, "CABS: ", Cabsp;
+        print*, "G: ", g_asym;
+        geom_proj = (N*(R0)**3)**(2/3)*pi
+        Csca = Csca/geom_proj
+        Cext = Cext/geom_proj
+        Cabsp = Cabsp/geom_proj
+        print*, "QEXT: ", Qext;
+        print*, "QSCA: ", Qsca;
+        print*, "QABS: ", Qabs;
 endif
 
 deallocate(an,bn,ad,dd)

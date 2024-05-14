@@ -1762,37 +1762,47 @@ subroutine ComputePart(p,isplit,amin,amax,apow,amean,asig,na,fmax,mmf_a0,mmf_str
 
            call meanscatt(lam(ilam),mmf_a0,nmono,Dfrac,kfrac,m,iqsca,iqcor,iqgeo,1,nang2,&
                 cext_mmf,csca_mmf,cabs_mmf,mmf_Gsca,Smat_mmf,deltaphi)
-           if (deltaphi .gt. 1.d0) then
-              Smat_nbad = Smat_nbad + 1
-           endif
+           print*, "####################"
+           print*, "CSCA: ", csca_mmf
+           print*, "CEXT: ", cext_mmf
+           print*, "CABS: ", cabs_mmf
+           print*, "GSCA: ", mmf_Gsca
+           ! if (deltaphi .gt. 1.d0) then
+           !    Smat_nbad = Smat_nbad + 1
+           ! endif
 
-           factor = 4.d0*pi / wvno**2/csca_mmf
-           do j=1,nang
-              Mief11(j) = 0.5d0*(Smat_mmf(1,j)+Smat_mmf(1,j+1)) * factor
-           enddo
-           !tot  = 0d0; tot2 = 0d0
-           !do j=1,nang
-           !   ! This integration assumes that the grid is regular (linear)
-           !   !               F11                         sin theta                  d theta
-           !   tot  = tot  +  Mief11(j) * sin(pi*(real(j)-0.5d0)/real(nang))  * (pi/dble(nang)) * (2.d0*pi)
-           !   tot2 = tot2 +              sin(pi*(real(j)-0.5d0)/real(nang))  * (pi/dble(nang)) * (2.d0*pi)
-           !enddo
-           ! write(stde,'(1p,"lam,r,err ",3e10.2)') lam(ilam),r(is),(tot-tot2)/tot2
-           
-           ! Relation between F_ij and S_ij: F = 4 * pi * S / (k^2*Csca)
-           ! csca is still needed as weight, will be devided out later
-           factor = 4.d0*pi / wvno**2
-           do j=1,nang
-              f11(j) = f11(j) + nr(is)*0.5d0*(Smat_mmf(1,j)+Smat_mmf(1,j+1)) * factor
-              f12(j) = f12(j) + nr(is)*0.5d0*(Smat_mmf(2,j)+Smat_mmf(2,j+1)) * factor
-              f22(j) = f22(j) + nr(is)*0.5d0*(Smat_mmf(1,j)+Smat_mmf(1,j+1)) * factor ! F22 = F11
-              f33(j) = f33(j) + nr(is)*0.5d0*(Smat_mmf(3,j)+Smat_mmf(3,j+1)) * factor
-              f34(j) = f34(j) + nr(is)*0.5d0*(Smat_mmf(4,j)+Smat_mmf(4,j+1)) * factor
-              f44(j) = f44(j) + nr(is)*0.5d0*(Smat_mmf(3,j)+Smat_mmf(3,j+1)) * factor ! F44 = F33
-           enddo
-           cext = cext + nr(is) * cext_mmf
-           csca = csca + nr(is) * csca_mmf
-           cabs = cabs + nr(is) * cabs_mmf
+           ! factor = 4.d0*pi / wvno**2/csca_mmf
+           ! do j=1,nang
+           !    Mief11(j) = 0.5d0*(Smat_mmf(1,j)+Smat_mmf(1,j+1)) * factor
+           ! enddo
+           ! !tot  = 0d0; tot2 = 0d0
+           ! !do j=1,nang
+           ! !   ! This integration assumes that the grid is regular (linear)
+           ! !   !               F11                         sin theta                  d theta
+           ! !   tot  = tot  +  Mief11(j) * sin(pi*(real(j)-0.5d0)/real(nang))  * (pi/dble(nang)) * (2.d0*pi)
+           ! !   tot2 = tot2 +              sin(pi*(real(j)-0.5d0)/real(nang))  * (pi/dble(nang)) * (2.d0*pi)
+           ! !enddo
+           ! ! write(stde,'(1p,"lam,r,err ",3e10.2)') lam(ilam),r(is),(tot-tot2)/tot2
+
+           ! ! Relation between F_ij and S_ij: F = 4 * pi * S / (k^2*Csca)
+           ! ! csca is still needed as weight, will be devided out later
+           ! factor = 4.d0*pi / wvno**2
+           ! do j=1,nang
+           !    f11(j) = f11(j) + nr(is)*0.5d0*(Smat_mmf(1,j)+Smat_mmf(1,j+1)) * factor
+           !    f12(j) = f12(j) + nr(is)*0.5d0*(Smat_mmf(2,j)+Smat_mmf(2,j+1)) * factor
+           !    f22(j) = f22(j) + nr(is)*0.5d0*(Smat_mmf(1,j)+Smat_mmf(1,j+1)) * factor ! F22 = F11
+           !    f33(j) = f33(j) + nr(is)*0.5d0*(Smat_mmf(3,j)+Smat_mmf(3,j+1)) * factor
+           !    f34(j) = f34(j) + nr(is)*0.5d0*(Smat_mmf(4,j)+Smat_mmf(4,j+1)) * factor
+           !    f44(j) = f44(j) + nr(is)*0.5d0*(Smat_mmf(3,j)+Smat_mmf(3,j+1)) * factor ! F44 = F33
+           ! enddo
+           cext = cext_mmf
+           csca = csca_mmf
+           cabs = cabs_mmf
+           print*, "####################"
+           print*, "CSCA: ", csca
+           print*, "CEXT: ", cext
+           print*, "CABS: ", cabs
+
            mass = mass + nr(is) * m_agg
            vol  = vol  + nr(is) * V_agg
         
@@ -1845,11 +1855,19 @@ subroutine ComputePart(p,isplit,amin,amax,apow,amean,asig,na,fmax,mmf_a0,mmf_str
      ! Set the cross sections
      ! ----------------------------------------------------------------------
      if (ilam .eq.1) p%rho  = mass/vol
-     ! 10^4 because length units in the computation above were microns
-     p%Kext(ilam) = 1d4 * cext / mass
-     p%Kabs(ilam) = 1d4 * cabs / mass
-     p%Ksca(ilam) = 1d4 * csca / mass
 
+
+
+     ! 10^4 because length units in the computation above were microns
+     p%Kext(ilam) = cext
+     p%Kabs(ilam) = cabs
+     p%Ksca(ilam) = csca
+     p%g(ilam) = MMF_Gsca
+
+    print*, "####################"
+    print*, "CSCA: ", p%Ksca(ilam)
+    print*, "CEXT: ", p%Kext(ilam)
+    print*, "CABS: ", p%Kabs(ilam)
      ! ----------------------------------------------------------------------
      ! Set the elements of the scattering matrix
      ! ----------------------------------------------------------------------
@@ -1893,8 +1911,8 @@ subroutine ComputePart(p,isplit,amin,amax,apow,amean,asig,na,fmax,mmf_a0,mmf_str
            p%F(ilam)%F44(j) = p%F(ilam)%F44(j) * tot2/tot
         enddo
         ! Scale kappa_scat, and change kappa_ext accordingly
-        p%Ksca(ilam) = p%Ksca(ilam) * tot/tot2
-        p%Kext(ilam) = p%Ksca(ilam) + p%Kabs(ilam)
+        ! p%Ksca(ilam) = p%Ksca(ilam)
+        ! p%Kext(ilam) = p%Ksca(ilam)
         
      endif   ! chopangle .gt. 0
 
@@ -1902,42 +1920,48 @@ subroutine ComputePart(p,isplit,amin,amax,apow,amean,asig,na,fmax,mmf_a0,mmf_str
      ! Average over angles to compute asymmetry factor g
      ! ----------------------------------------------------------------------
      ! A regular angular grid is assumed for this computation
-     tot = 0.0_dp
-     p%g(ilam) = 0.d0
-     p%testscat(ilam) = .true.
-     if (Smat_nbad.gt.0) p%testscat(ilam) = .false.
-     do i=1,nang
-        p%g(ilam) = p%g(ilam) + p%F(ilam)%F11(i)*cos(pi*(real(i)-0.5d0)/dble(nang)) &
-             *sin(pi*(real(i)-0.5d0)/dble(nang))
-        tot = tot + p%F(ilam)%F11(i)*sin(pi*(real(i)-0.5d0)/dble(nang))
-     enddo
-     p%g(ilam) = p%g(ilam)/tot
-          
-     if ((Smat_nbad .gt. 0) .and. (.not.mmfss)) then
-        ! To make sure the user understands, we replace uncertain data with zeros
-        p%g(ilam) = 0.d0   ! Set to isotropic scattering.
-        do j=1,nang
-           p%F(ilam)%F11(j) = 0.d0; p%F(ilam)%F12(j) = 0.d0; p%F(ilam)%F22(j) = 0.d0
-           p%F(ilam)%F33(j) = 0.d0; p%F(ilam)%F34(j) = 0.d0; p%F(ilam)%F44(j) = 0.d0
-        enddo
-     endif
-     
-     !$OMP atomic
-     ndone = ndone+1
-     if (progress) call tellertje(ndone,nlam,quiet)
+     ! tot = 0.0_dp
+     ! p%g(ilam) = 0.d0
+     ! p%testscat(ilam) = .true.
+     ! if (Smat_nbad.gt.0) p%testscat(ilam) = .false.
+     ! do i=1,nang
+     !    p%g(ilam) = p%g(ilam) + p%F(ilam)%F11(i)*cos(pi*(real(i)-0.5d0)/dble(nang)) &
+     !         *sin(pi*(real(i)-0.5d0)/dble(nang))
+     !    tot = tot + p%F(ilam)%F11(i)*sin(pi*(real(i)-0.5d0)/dble(nang))
+     ! enddo
+     ! p%g(ilam) = p%g(ilam)/tot
+
+     ! if ((Smat_nbad .gt. 0) .and. (.not.mmfss)) then
+     !    ! To make sure the user understands, we replace uncertain data with zeros
+     !    p%g(ilam) = 0.d0   ! Set to isotropic scattering.
+     !    do j=1,nang
+     !       p%F(ilam)%F11(j) = 0.d0; p%F(ilam)%F12(j) = 0.d0; p%F(ilam)%F22(j) = 0.d0
+     !       p%F(ilam)%F33(j) = 0.d0; p%F(ilam)%F34(j) = 0.d0; p%F(ilam)%F44(j) = 0.d0
+     !    enddo
+     ! endif
+
+     ! !$OMP atomic
+     ! ndone = ndone+1
+     ! if (progress) call tellertje(ndone,nlam,quiet)
 
   enddo   ! end loop ilam over wavelength
   !$OMP end parallel DO
 
-  ! Check if any g values exactly zero, pointing to issues with the scattering calculations 
-  p%scat_ok = .true.
-  p%scat_ok_lmin = 0.
-  do ilam=1,nlam
-     if (.not. p%testscat(ilam)) then
-        p%scat_ok = .false.
-        p%scat_ok_lmin = lam(ilam)
-     endif
-  enddo
+  ! Check if any g values exactly zero, pointing to issues with the scattering calculations
+  ! p%scat_ok = .true.
+  ! p%scat_ok_lmin = 0.
+  ! do ilam=1,nlam
+  !    if (.not. p%testscat(ilam)) then
+  !       p%scat_ok = .false.
+  !       p%scat_ok_lmin = lam(ilam)
+  !    endif
+  ! enddo
+
+    print*, "####################"
+    print*, "CSCA: ", p%Ksca
+    print*, "CEXT: ", p%Kext
+    print*, "CABS: ", p%Kabs
+    print*, "G: ", p%g
 
   deallocate(e1,e2)
   deallocate(e1mantle,e2mantle)
