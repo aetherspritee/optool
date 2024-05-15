@@ -1762,11 +1762,11 @@ subroutine ComputePart(p,isplit,amin,amax,apow,amean,asig,na,fmax,mmf_a0,mmf_str
 
            call meanscatt(lam(ilam),mmf_a0,nmono,Dfrac,kfrac,m,iqsca,iqcor,iqgeo,1,nang2,&
                 cext_mmf,csca_mmf,cabs_mmf,mmf_Gsca,Smat_mmf,deltaphi)
-           print*, "####################"
-           print*, "CSCA: ", csca_mmf
-           print*, "CEXT: ", cext_mmf
-           print*, "CABS: ", cabs_mmf
-           print*, "GSCA: ", mmf_Gsca
+           ! print*, "####################"
+           ! print*, "CSCA: ", csca_mmf
+           ! print*, "CEXT: ", cext_mmf
+           ! print*, "CABS: ", cabs_mmf
+           ! print*, "GSCA: ", mmf_Gsca
            ! if (deltaphi .gt. 1.d0) then
            !    Smat_nbad = Smat_nbad + 1
            ! endif
@@ -1798,10 +1798,10 @@ subroutine ComputePart(p,isplit,amin,amax,apow,amean,asig,na,fmax,mmf_a0,mmf_str
            cext = cext_mmf
            csca = csca_mmf
            cabs = cabs_mmf
-           print*, "####################"
-           print*, "CSCA: ", csca
-           print*, "CEXT: ", cext
-           print*, "CABS: ", cabs
+           ! print*, "####################"
+           ! print*, "CSCA: ", csca
+           ! print*, "CEXT: ", cext
+           ! print*, "CABS: ", cabs
 
            mass = mass + nr(is) * m_agg
            vol  = vol  + nr(is) * V_agg
@@ -1864,10 +1864,10 @@ subroutine ComputePart(p,isplit,amin,amax,apow,amean,asig,na,fmax,mmf_a0,mmf_str
      p%Ksca(ilam) = csca
      p%g(ilam) = MMF_Gsca
 
-    print*, "####################"
-    print*, "CSCA: ", p%Ksca(ilam)
-    print*, "CEXT: ", p%Kext(ilam)
-    print*, "CABS: ", p%Kabs(ilam)
+    ! print*, "####################"
+    ! print*, "CSCA: ", p%Ksca(ilam)
+    ! print*, "CEXT: ", p%Kext(ilam)
+    ! print*, "CABS: ", p%Kabs(ilam)
      ! ----------------------------------------------------------------------
      ! Set the elements of the scattering matrix
      ! ----------------------------------------------------------------------
@@ -1957,11 +1957,11 @@ subroutine ComputePart(p,isplit,amin,amax,apow,amean,asig,na,fmax,mmf_a0,mmf_str
   !    endif
   ! enddo
 
-    print*, "####################"
-    print*, "CSCA: ", p%Ksca
-    print*, "CEXT: ", p%Kext
-    print*, "CABS: ", p%Kabs
-    print*, "G: ", p%g
+    ! print*, "####################"
+    ! print*, "CSCA: ", p%Ksca
+    ! print*, "CEXT: ", p%Kext
+    ! print*, "CABS: ", p%Kabs
+    ! print*, "G: ", p%g
 
   deallocate(e1,e2)
   deallocate(e1mantle,e2mantle)

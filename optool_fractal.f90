@@ -835,17 +835,17 @@ elseif(iqsca .eq. 3) then
         Cabsp = max(Cabsp,Cext-Csca)
         ! Scattrering is computed from Cext(MFT)-Cabs.
         Csca  = Cext - Cabsp
-        print*, "CEXT: ", Cext;
-        print*, "CSCA: ", Csca;
-        print*, "CABS: ", Cabsp;
-        print*, "G: ", g_asym;
+        ! print*, "CEXT: ", Cext;
+        ! print*, "CSCA: ", Csca;
+        ! print*, "CABS: ", Cabsp;
+        ! print*, "G: ", g_asym;
         geom_proj = (N*(R0)**3)**(2/3)*pi
         Csca = Csca/geom_proj
         Cext = Cext/geom_proj
         Cabsp = Cabsp/geom_proj
-        print*, "QEXT: ", Qext;
-        print*, "QSCA: ", Qsca;
-        print*, "QABS: ", Qabs;
+        ! print*, "QEXT: ", Qext;
+        ! print*, "QSCA: ", Qsca;
+        ! print*, "QABS: ", Qabs;
 endif
 
 deallocate(an,bn,ad,dd)
