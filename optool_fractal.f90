@@ -839,7 +839,9 @@ elseif(iqsca .eq. 3) then
         ! print*, "CSCA: ", Csca;
         ! print*, "CABS: ", Cabsp;
         ! print*, "G: ", g_asym;
-        geom_proj = (N*(R0)**3)**(2/3)*pi
+        geom_proj = (PN*(R0)**3)**(2.0/3.0)*pi
+        print*, "geom_proj: ", geom_proj;
+        print*, "2/3: ", (2/3);
         Csca = Csca/geom_proj
         Cext = Cext/geom_proj
         Cabsp = Cabsp/geom_proj
